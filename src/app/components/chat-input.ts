@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'chat-input',
   template: `
-    <form>
+    <form class="w-full mt-4">
       <input
         type="text"
         placeholder="Type a message..."

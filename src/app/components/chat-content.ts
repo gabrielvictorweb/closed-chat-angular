@@ -5,7 +5,7 @@ import { ListMessagesFacade } from '../facades/list-messages';
 @Component({
   selector: 'chat-content',
   template: `
-    <div class="flex-1 w-full text-white flex items-center justify-center min-h-0">
+    <div class="h-full w-full text-white flex items-center justify-center">
       <ng-container *ngIf="messages$ | async as messages; else noChat">
         <div class="w-full h-full overflow-y-auto p-4">
           <div *ngFor="let message of messages" class="mb-2 p-2 bg-gray-800 rounded">

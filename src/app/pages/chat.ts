@@ -9,8 +9,8 @@ import { ChatNav } from '../components/chat-nav';
     <div class="h-screen w-full bg-dark-bg flex">
       <chat-nav />
 
-      <main class="flex-1 p-4 flex flex-col justify-between">
-        <div class="flex-1 h-full w-full text-white flex items-center justify-center">
+      <main class="flex-1 p-4 pt-0 flex flex-col justify-between">
+        <div class="flex-1 overflow-auto min-h-0">
           <chat-content />
         </div>
 
