@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ListMessagesFacade } from '../facades/list-messages';
+import { MessageComponent } from './message';
 
 @Component({
   selector: 'chat-content',
@@ -8,9 +9,7 @@ import { ListMessagesFacade } from '../facades/list-messages';
     <div class="h-full w-full text-white flex items-center justify-center">
       <ng-container *ngIf="messages$ | async as messages; else noChat">
         <div class="w-full h-full overflow-y-auto p-4">
-          <div *ngFor="let message of messages" class="mb-2 p-2 bg-gray-800 rounded">
-            {{ message.content }}
-          </div>
+          <app-message *ngFor="let message of messages" [message]="message" />
         </div>
       </ng-container>
 
@@ -23,7 +22,7 @@ import { ListMessagesFacade } from '../facades/list-messages';
     </div>
   `,
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MessageComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChatContent {
