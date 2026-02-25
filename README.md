@@ -1,4 +1,5 @@
-# 🔒 Closed Chat
+
+<img width="1536" height="1024" alt="ChatGPT Image 24 de fev  de 2026, 01_31_52" src="https://github.com/user-attachments/assets/897e0ee2-8bf1-4e47-9576-465b774cd7fd" />
 
 > **Privacy-first anonymous chat application powered by real-time WebSocket communication**
 
