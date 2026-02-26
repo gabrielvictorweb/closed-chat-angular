@@ -1,6 +1,7 @@
 import {
   Component,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   inject,
   ViewChild,
   ElementRef,
@@ -10,56 +11,48 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ListMessagesFacade } from '../facades/list-messages';
+import { MessageComponent } from './message';
 import { Subject, takeUntil } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'chat-content',
   template: `
     <div class="h-full w-full text-white flex items-center justify-center">
-      <ng-container *ngIf="messages$ | async as messages; else noChat">
-        <div #scrollContainer class="w-full h-full overflow-y-auto p-4 scroll-smooth">
-          <div
-            *ngFor="let message of messages"
-            [ngClass]="
-              message.senderId === currentUserId
-                ? 'flex justify-end rounded-br-0'
-                : 'rounded-bl-0 flex justify-start'
-            "
-            class="mb-2"
-          >
-            <div
-              [ngClass]="message.senderId === currentUserId ? 'rounded-br-none' : 'rounded-bl-none'"
-              class="p-4 bg-gray-800 rounded-2xl max-w-xs"
-            >
-              {{ message.content }}
-            </div>
-          </div>
+      @if (messages$ | async; as messages) {
+        <div class="w-full h-full overflow-y-auto p-4" #scrollContainer>
+          @for (message of messages; track message.id) {
+            <app-message [message]="message" [currentUserId]="currentUserId" />
+          }
         </div>
-      </ng-container>
-
-      <ng-template #noChat>
+      } @else {
         <div class="text-center">
           <p class="text-gray-400">No chat selected</p>
           <p class="text-gray-500 text-sm mt-2">Select or create a conversation to get started</p>
         </div>
-      </ng-template>
+      }
     </div>
   `,
   standalone: true,
-  imports: [CommonModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule, MessageComponent],
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class ChatContent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
 
   private messageFacade = inject(ListMessagesFacade);
+  private cdr = inject(ChangeDetectorRef);
   private destroy$ = new Subject<void>();
+  private snackBar = inject(MatSnackBar);
 
   messages$ = this.messageFacade.messages$;
   currentUserId = this.messageFacade.currentUserId$;
 
   ngOnInit() {
-    this.messages$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    this.messages$.pipe(takeUntil(this.destroy$)).subscribe((messages) => {
+      console.log('Mensagens recebidas:', messages?.length);
+      console.log('Mensagens:', messages);
+      this.cdr.markForCheck();
       this.scrollToBottom();
     });
   }
@@ -73,6 +66,10 @@ export class ChatContent implements AfterViewInit, OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  trackByMessageId(index: number, message: any): string {
+    return message.id;
+  }
+
   private scrollToBottom() {
     if (this.scrollContainer) {
       setTimeout(() => {
@@ -80,5 +77,36 @@ export class ChatContent implements AfterViewInit, OnInit, OnDestroy {
           this.scrollContainer.nativeElement.scrollHeight;
       }, 0);
     }
+  }
+
+  handleCopy(content: string) {
+    navigator.clipboard
+      .writeText(content)
+      .then(() => {
+        this.snackBar.open('Texto copiado!', '', {
+          duration: 2000,
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom',
+          panelClass: ['snackbar-success'],
+        });
+      })
+      .catch((err) => {
+        this.snackBar.open('Erro ao copiar texto', '', {
+          duration: 2000,
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom',
+        });
+      });
+  }
+
+  handleReaction(emoji: string) {
+    console.log('Reação com emoji:', emoji);
+    this.snackBar.open(`Você reagiu com ${emoji}`, '', {
+      duration: 2000,
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom',
+      panelClass: ['snackbar-success'],
+    });
+    // Aqui você pode implementar a lógica para salvar a reação no backend
   }
 }
