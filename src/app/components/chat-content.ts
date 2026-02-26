@@ -50,8 +50,6 @@ export class ChatContent implements AfterViewInit, OnInit, OnDestroy {
 
   ngOnInit() {
     this.messages$.pipe(takeUntil(this.destroy$)).subscribe((messages) => {
-      console.log('Mensagens recebidas:', messages?.length);
-      console.log('Mensagens:', messages);
       this.cdr.markForCheck();
       this.scrollToBottom();
     });
@@ -107,6 +105,5 @@ export class ChatContent implements AfterViewInit, OnInit, OnDestroy {
       verticalPosition: 'bottom',
       panelClass: ['snackbar-success'],
     });
-    // Aqui você pode implementar a lógica para salvar a reação no backend
   }
 }
