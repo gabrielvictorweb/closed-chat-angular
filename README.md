@@ -1,6 +1,7 @@
 <img width="1536" height="1024" alt="ChatGPT Image 24 de fev  de 2026, 01_31_52" src="https://github.com/user-attachments/assets/897e0ee2-8bf1-4e47-9576-465b774cd7fd" />
 
 > **Privacy-first anonymous chat application powered by real-time WebSocket communication**
+
 > **Status:** Em desenvolvimento
 
 A modern, ephemeral messaging platform built with Angular that prioritizes user privacy by design. Closed Chat delivers real-time conversations without storing any messages in a database—because the best way to protect data is to never collect it.
