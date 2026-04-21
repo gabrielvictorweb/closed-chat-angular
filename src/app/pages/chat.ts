@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ChatInput } from '../components/chat-input';
 import { ChatContent } from '../components/chat-content';
 import { ChatNav } from '../components/chat-nav';
+import { ChatHeader } from '../components/chat-header';
 
 @Component({
   selector: 'chat-page',
@@ -9,7 +10,9 @@ import { ChatNav } from '../components/chat-nav';
     <div class="h-screen w-full bg-dark-bg flex">
       <chat-nav />
 
-      <main class="flex-1 p-4 pt-0 flex flex-col justify-between">
+      <main class="flex-1 flex flex-col">
+        <chat-header />
+
         <div class="flex-1 overflow-auto min-h-0">
           <chat-content />
         </div>
@@ -19,7 +22,7 @@ import { ChatNav } from '../components/chat-nav';
     </div>
   `,
   standalone: true,
-  imports: [ChatInput, ChatContent, ChatNav],
+  imports: [ChatInput, ChatContent, ChatNav, ChatHeader],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChatPage {}

@@ -20,7 +20,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   template: `
     <div class="h-full w-full text-white flex items-center justify-center">
       @if (messages$ | async; as messages) {
-        <div class="w-full h-full overflow-y-auto p-4" #scrollContainer>
+        <div class="w-full h-full overflow-y-auto px-4" #scrollContainer>
           @for (message of messages; track message.id) {
             <app-message [message]="message" [currentUserId]="currentUserId" />
           }

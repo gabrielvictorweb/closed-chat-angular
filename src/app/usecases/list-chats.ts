@@ -3,15 +3,21 @@ import { ChatGateway } from '../gateways/chat.gateway';
 import { Chat } from '../../domain/entity/chat.entity';
 import { CHATS_GATEWAY } from '../tokens';
 import { Observable } from 'rxjs/internal/Observable';
-import { startWith } from 'rxjs';
+import { shareReplay, startWith } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ListChats {
-  constructor(@Inject(CHATS_GATEWAY) private chatGateway: ChatGateway) {}
+  private chats$: Observable<Chat[]>;
+
+  constructor(@Inject(CHATS_GATEWAY) private chatGateway: ChatGateway) {
+    this.chats$ = this.chatGateway
+      .getAll()
+      .pipe(startWith([]), shareReplay({ bufferSize: 1, refCount: true }));
+  }
 
   execute(): Observable<Chat[]> {
-    return this.chatGateway.getAll().pipe(startWith([]));
+    return this.chats$;
   }
 }

@@ -8,28 +8,49 @@ import { inject } from '@angular/core';
 @Component({
   selector: 'app-message',
   template: `
-    <div
-      class="flex py-8"
-      [ngClass]="message().senderId !== currentUserId() ? 'justify-start' : 'justify-end'"
-    >
-      <div
-        class="mb-2 p-3 rounded-md max-w-[80%]"
-        [ngClass]="
-          message().senderId !== currentUserId()
-            ? 'bg-gray-800 rounded-bl-none'
-            : 'bg-blue-600 rounded-br-none'
-        "
-      >
-        <h1 class="text-gray-400 text-xs mb-1">
-          {{ message().senderId !== currentUserId() ? 'Other User' : 'You' }}
-        </h1>
+    <div class="flex my-4" [ngClass]="isOwn() ? 'justify-end' : 'justify-start'">
+      <div class="max-w-[min(40%,32rem)] min-w-20 relative group">
+        <div
+          class="relative px-2 pt-1.5 pb-2 rounded-lg shadow-sm"
+          [ngClass]="isOwn() ? 'bg-[#005c4b] rounded-tr-none' : 'bg-[#1f2937] rounded-tl-none'"
+        >
+          @if (isOwn()) {
+            <span
+              class="absolute top-0 -right-2 w-0 h-0 border-l-8 border-l-[#005c4b] border-b-8 border-b-transparent"
+            ></span>
+          } @else {
+            <span
+              class="absolute top-0 -left-2 w-0 h-0 border-r-8 border-r-[#1f2937] border-b-8 border-b-transparent"
+            ></span>
+          }
 
-        <p class="text-white text-sm">{{ message().content }}</p>
-        <p class="text-gray-500 text-xs mt-1">
-          {{ message().createdAt | date: 'shortTime' }}
-        </p>
+          @if (!isOwn()) {
+            <span class="text-[#53bdeb] text-[0.6875rem] font-medium leading-none">
+              {{ message().senderId | slice: 0 : 8 }}
+            </span>
+          }
 
-        <app-message-tools (copyText)="handleCopy()" (reaction)="handleReaction($event)" />
+          <p
+            class="text-[#e9edef] text-[0.875rem] leading-[1.35] whitespace-pre-wrap wrap-break-word"
+          >
+            {{ message().content }}
+            <span class="inline-block w-18"></span>
+          </p>
+
+          <span
+            class="absolute bottom-1.5 right-2 text-[0.6875rem] leading-none"
+            [ngClass]="isOwn() ? 'text-white/60' : 'text-white/45'"
+          >
+            {{ message().createdAt | date: 'HH:mm' }}
+          </span>
+        </div>
+
+        <div
+          class="absolute top-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-10"
+          [ngClass]="isOwn() ? '-left-20' : '-right-20'"
+        >
+          <app-message-tools (copyText)="handleCopy()" (reaction)="handleReaction($event)" />
+        </div>
       </div>
     </div>
   `,
@@ -42,6 +63,10 @@ export class MessageComponent {
   currentUserId = input<string>();
 
   private snackBar = inject(MatSnackBar);
+
+  isOwn(): boolean {
+    return this.message().senderId === this.currentUserId();
+  }
 
   handleCopy() {
     const content = this.message().content;

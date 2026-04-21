@@ -106,6 +106,20 @@ The application will be available at `http://localhost:4200/`
 
 In development, the app uses **Faker.js** to generate realistic mock data. The chat repository automatically detects `isDevMode()` and switches between mock data and real WebSocket connections.
 
+### Run with Docker
+
+The repository already ships with a production-ready `Dockerfile` that builds the Angular SSR bundle and serves it with Express.
+
+```bash
+# Build the image (run from the project root)
+docker build -t closed-chat-angular:local .
+
+# Start the container and map port 4000
+docker run --rm -p 4000:4000 closed-chat-angular:local
+```
+
+Visit `http://localhost:4000/` to use the app. Rebuild the image after making code changes, since the container runs the compiled bundle rather than `ng serve`.
+
 ---
 
 ## 📦 Build

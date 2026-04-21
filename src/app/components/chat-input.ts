@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'chat-input',
   template: `
-    <form class="w-full mt-4 flex gap-2">
+    <form class="w-full mt-4 flex gap-2 p-4">
       <input
         type="text"
         placeholder="Type a message..."

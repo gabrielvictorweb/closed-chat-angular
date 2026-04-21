@@ -1,4 +1,5 @@
-import { Injectable, isDevMode } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID, isDevMode } from '@angular/core';
+import { isPlatformServer } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { MessageGateway } from '../../app/gateways/message.gateway';
 import { Message } from '../../domain/entity/message.entity';
@@ -14,7 +15,14 @@ export class MessageRepository implements MessageGateway {
     other: 'z9y8x7w6-v5u4-3b2a-1c0d-9e8f7a6b5c4d',
   };
 
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(
+    private readonly httpClient: HttpClient,
+    @Inject(PLATFORM_ID) private readonly platformId: object,
+  ) {}
+
+  private shouldUseMocks(): boolean {
+    return isDevMode() || isPlatformServer(this.platformId);
+  }
 
   private generateMockMessages(chatId: string): Message[] {
     const senderIds = Object.values(this.SENDER_IDS);
@@ -29,7 +37,7 @@ export class MessageRepository implements MessageGateway {
   }
 
   getMessagesByChat(chatId: string): Observable<Message[]> {
-    if (isDevMode()) {
+    if (this.shouldUseMocks()) {
       return of(this.generateMockMessages(chatId));
     }
 
